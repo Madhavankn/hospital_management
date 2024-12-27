@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management System</title>
+    <style>
+        h1{
+            text-align: center;
+            color: blue;
+        }
+        form{
+            margin: 0 auto;
+            width: 50%;
+            border: 1px solid black;
+            padding: 10px;
+        }
+        label{
+            display: inline-block;
+            width: 100px;
+            margin-bottom: 10px;
+        }
+        input{
+            width: 200px;
+            margin-bottom: 10px;
+        }
+        </style>
+</head>
+<body>
+    <h1>Hopital Management System</h1>
+    <form id="mainform">
+        <label for="name" >Name:</label>
+        <input type="text" name="name" id="name" required>
+        <br>
+        <label for="age" >Age:</label>
+        <input type="number" name="age" id="age" required>
+        <br>
+        <label for="gender" >Gender</label>
+        <input type="radio" name="gender" id="gender" value="male"> Male </input>
+        <input type="radio" name="gender" id="gender" value="female"> Female </input>
+        <br>
+        <label for="mobileno" >Mobile No:</label>
+        <input type="number" name="mobileno" id="mobileno" required>
+        <br>
+        <label for="address" >Address:</label>
+        <input type="text" name="address" id="address" required>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>MobileNo</th>
+            <th>Address</th>
+        </tr>
+        
+    </table>
+
+    <script>
+        const fetchData = async () => {
+            const response = await fetch('http://localhost:3000');
+            const data = await response.json();
+            const table = document.querySelector('table');
+            data.forEach(patient => {
+                const tr = document.createElement('tr');
+                const name = document.createElement('td');
+                name.textContent = patient.name;
+                tr.appendChild(name);
+                const age = document.createElement('td');
+                age.textContent = patient.age;
+                tr.appendChild(age);
+                const gender = document.createElement('td');
+                gender.textContent = patient.gender;
+                tr.appendChild(gender);
+                const mobileno = document.createElement('td');
+                mobileno.textContent = patient.mobileno;
+                tr.appendChild(mobileno);
+                const address = document.createElement('td');
+                address.textContent = patient.address;
+                tr.appendChild(address);
+                table.appendChild(tr);
+            });
+        };
+    
+        fetchData();
+    
+        const handleFormSubmit = async (event) => {
+            event.preventDefault();
+    
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            const gender = document.querySelector('input[name="gender"]:checked')?.value;
+            const mobileno = document.getElementById('mobileno').value;
+            const address = document.getElementById('address').value;
+    
+            const response = await fetch('http://localhost:3000/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name,
+                    age,
+                    gender,
+                    mobileno,
+                    address,
+                }),
+            });
+    
+            if (response.ok) {
+                console.log(response);
+                const table = document.querySelector('table');
+                const tr = document.createElement('tr');
+                const name = document.createElement('td');
+                name.textContent = response.body.name;
+                tr.appendChild(name);
+                const age = document.createElement('td');
+                age.textContent = response.body.age;
+                tr.appendChild(age);
+                const gender = document.createElement('td');
+                gender.textContent = response.body.gender;
+                tr.appendChild(gender);
+                const mobileno = document.createElement('td');
+                mobileno.textContent = response.body.mobileno;
+                tr.appendChild(mobileno);
+                const address = document.createElement('td');
+                address.textContent = response.body.address;
+                tr.appendChild(address);
+                table.appendChild(tr);  
+            }
+        };
+    
+        const form = document.getElementById('mainform');
+        form.addEventListener('submit', handleFormSubmit);
+    </script>    
+</body>
+</html>
